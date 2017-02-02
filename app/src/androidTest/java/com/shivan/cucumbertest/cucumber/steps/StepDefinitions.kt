@@ -28,116 +28,56 @@ import org.junit.runner.RunWith
 @SuppressWarnings("JUnitTestCaseWithNoTests")
 @RunWith(AndroidJUnit4::class)
 class StepDefinitions {
-    private var mInstrumentationContext: Context? = null
-    private var mAppContext: Context? = null
-//    private var mCurrentPage: BasePage? = null
-    private var mActivity: Activity? = null
-//    private var mFullWakeUpLock: PowerManager.WakeLock? = null
-//    private var mCountingIdlingResourceListener: CountingIdlingResourceListenerImpl? = null
+	private var mInstrumentationContext: Context? = null
+	private var mAppContext: Context? = null
+	private var mActivity: Activity? = null
 
-    @Rule
-    private val mActivityRule = ActivityTestRule<MainActivity>(MainActivity::class.java,
-            false, false)
+	@Rule
+	private val mActivityRule = ActivityTestRule<MainActivity>(MainActivity::class.java, false, false)
 
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        mInstrumentationContext = InstrumentationRegistry.getContext()
-        mAppContext = InstrumentationRegistry.getTargetContext()
-//        registerIdlingResources()
-        mActivity = mActivityRule.launchActivity(Intent()) // Start Activity before each test scenario
-//        turnOnScreenOfTestDevice()
-    }
+	@Before
+	@Throws(Exception::class)
+	fun setUp() {
+		mInstrumentationContext = InstrumentationRegistry.getContext()
+		mAppContext = InstrumentationRegistry.getTargetContext()
+		mActivity = mActivityRule.launchActivity(Intent()) // Start Activity before each test scenario
+	}
 
-//    private fun registerIdlingResources() {
-//        mCountingIdlingResourceListener = CountingIdlingResourceListenerImpl("ButtonAnimationStarter")
-//        LoginActivity.setIdlingNotificationListener(mCountingIdlingResourceListener)
-//        Espresso.registerIdlingResources(mCountingIdlingResourceListener!!.getCountingIdlingResource())
-//    }
+	/**
+	 * All the clean up of application's data and state after each scenario must happen here
+	 * The last call of this method should always be the call to parent's tear down method
+	 */
+	@After
+	@Throws(Exception::class)
+	fun tearDown() {
+		mActivity?.finish()
+	}
 
-//    private fun turnOnScreenOfTestDevice() {
-//        val powerManager = mActivity!!.getSystemService(Context.POWER_SERVICE) as PowerManager
-//
-//        mFullWakeUpLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP, "FULL WAKE UP LOCK")
-//        // This will turn on the screen during the test (lock screen still needs to be always disabled)
-//        mFullWakeUpLock!!.acquire()
-//    }
+	@Given("^แสดงหน้าหลัก$")
+	fun focus_on_the_main_screen() {
+		assertNotNull(mActivity)
+	}
 
-    /**
-     * All the clean up of application's data and state after each scenario must happen here
-     * The last call of this method should always be the call to parent's tear down method
-     */
-    @After
-    @Throws(Exception::class)
-    fun tearDown() {
-        mActivity?.finish()
-//        LoginActivity.setIdlingNotificationListener(null)
-//        Espresso.unregisterIdlingResources(mCountingIdlingResourceListener!!.getCountingIdlingResource())
-//        ActivityFinisher.finishOpenActivities() // Required for testing App with multiple activities
-//        letScreenOfTestDeviceTurnOff()
-    }
+	@When("^เมื่อพิมพ์ \"(.+)\"$")
+	fun enter_the_data(data: String) {
+		onView(withId(R.id.input)).perform(typeText(data), closeSoftKeyboard())
+	}
 
-//    private fun letScreenOfTestDeviceTurnOff() {
-//        if (mFullWakeUpLock != null) {
-//            mFullWakeUpLock!!.release()
-//        }
-//    }
+	@When("^ไม่กรอกข้อมูล$")
+	fun clear_the_data() {
+		onView(withId(R.id.input)).perform(clearText(), closeSoftKeyboard())
+	}
 
-    /**
-     * Wait for the debugger to be manually attached to this running process.
-     * Use this to debug test execution by adding this step to your test scenario and
-     * when the test is running in Android Studio choose menu "Run - Attach debugger to Android process",
-     * finally select the name of your app package from the list of processes displayed.
-     */
-//    @Given("^I wait for manual attachment of the debugger$")
-//    @Throws(InterruptedException::class)
-//    fun wait_for_manual_attachment_of_debugger() {
-//        while (!Debug.isDebuggerConnected()) {
-//            Thread.sleep(1000)
-//        }
-//    }
+	@And("^กดปุ่ม \"(.+)\"$")
+	fun tap_on_button(buttonAliasOrText: String) {
+		when (buttonAliasOrText) {
+			"FAB" -> onView(withId(R.id.fab)).perform(click())
+			else  -> onView(withText(buttonAliasOrText)).perform(click())
+		}
+	}
 
-    @Given("^Видим главный экран$")
-    fun focus_on_the_main_screen() {
-        assertNotNull(mActivity)
-//        mCurrentPage = LoginPage()
-    }
-
-    @When("^в поле ввода набираем \"(.+)\"$")
-    fun enter_the_data(data: String) {
-        onView(withId(R.id.input)).perform(typeText(data), closeSoftKeyboard())
-//        mCurrentPage = mCurrentPage!!.`is`(LoginPage::class.java).doLogin(userName, password)
-    }
-
-    @When("^поле ввода оставляем пустым$")
-    fun clear_the_data() {
-        onView(withId(R.id.input)).perform(clearText(), closeSoftKeyboard())
-//        mCurrentPage = mCurrentPage!!.`is`(LoginPage::class.java).doLogin(userName, password)
-    }
-
-    @And("^жмем на кнопку \"(.+)\"$")
-    fun tap_on_button(buttonAliasOrText: String) {
-        when (buttonAliasOrText) {
-            "FAB" -> onView(withId(R.id.fab)).perform(click())
-            else -> onView(withText(buttonAliasOrText)).perform(click())
-        }
-//        mCurrentPage = mCurrentPage!!.`is`(LoginPage::class.java).doLogin(userName, password)
-    }
-
-    @Then("^появляется сообщение \"(.+)\"$")
-    fun i_see_the_message(message: String) {
-        onView(withText(message)).check(matches(isDisplayed()))
-//        "Replace with your own action"
-//        mCurrentPage!!.`is`(WelcomePage::class.java)
-    }
-
-//    @And("^the title is \"(.+)\"$")
-//    fun the_title_is(title: String) {
-//        mCurrentPage!!.`is`(WelcomePage::class.java).checkTitle(title)
-//    }
-
-    companion object {
-
-        val TAG = StepDefinitions::class.java.simpleName
-    }
+	@Then("^แสดงข้อความ \"(.+)\"$")
+	fun i_see_the_message(message: String) {
+		onView(withText(message)).check(matches(isDisplayed()))
+	}
 }

@@ -18,6 +18,5 @@ import cucumber.api.CucumberOptions
                 "html:/data/data/com.shivan.cucumbertest/cucumber-reports/cucumber-html-report", 
                 "json:/data/data/com.shivan.cucumbertest/cucumber-reports/cucumber.json", 
                 "junit:/data/data/com.shivan.cucumbertest/cucumber-reports/cucumber.xml")
-//        tags = arrayOf("~@manual", "@login-scenarios")
 )
 class CucumberTestCase
